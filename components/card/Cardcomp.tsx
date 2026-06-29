@@ -5,7 +5,11 @@ export default function Card({ data }: { data: MenuSection[] }) {
   return (
     <div>
       {data.map((section) => (
-        <div key={section.id} id={section.id} style={{ marginBottom: "60px", scrollMarginTop: "40px" }}>
+        <div
+          key={section.id}
+          id={section.id}
+          style={{ marginBottom: "60px", scrollMarginTop: "40px",}}
+        >
           <h1
             style={{
               textAlign: "left",
@@ -62,18 +66,35 @@ export default function Card({ data }: { data: MenuSection[] }) {
                 <div
                   key={child.id}
                   id={child.id}
-                  style={{ marginLeft: "20px", marginBottom: "16px", scrollMarginTop: "40px" }}
+                  style={{
+                    marginLeft: "20px",
+                    marginBottom: "16px",
+                    scrollMarginTop: "40px",
+                  }}
                 >
-                  <h3 style={{ fontSize: "15px", color: "#555", fontWeight: 600 }}>
+                  <h3
+                    style={{ fontSize: "15px", color: "#555", fontWeight: 600 }}
+                  >
                     {child.title}
                   </h3>
-                  <p style={{ fontSize: "14px", color: "#444", lineHeight: 1.6 }}>
+                  <p
+                    style={{ fontSize: "14px", color: "#444", lineHeight: 1.6 }}
+                  >
                     {child.content}
                   </p>
                 </div>
               ))}
             </div>
           ))}
+          <hr
+            style={{
+              border: "none",
+              borderStyle: "solid",
+              borderColor: "#f3f3f3",
+              borderWidth: "1px",
+              marginTop: "40px",
+            }}
+          />
         </div>
       ))}
 

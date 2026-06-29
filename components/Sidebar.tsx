@@ -13,7 +13,7 @@ export default function Sidebar({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Keep the active sidebar item scrolled into view as the user scrolls the content
+ 
   useEffect(() => {
     if (!activeId || !containerRef.current) return;
     const el = document.getElementById(`menu-${activeId}`);

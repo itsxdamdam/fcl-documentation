@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuChild } from "../../Lib/menuData";
+import { MenuChild } from "../Lib/menuData";
 
 export default function MenuItem({
   item,
@@ -23,7 +23,7 @@ export default function MenuItem({
           marginBottom: "8px",
           marginLeft: "12px",
           cursor: "pointer",
-          color: isActive ? "#d97706" : "#555",
+          color: isActive ? "#140c02" : "#555",
           fontWeight: isActive ? 600 : 400,
           display: "flex",
           alignItems: "center",

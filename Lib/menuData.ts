@@ -4,6 +4,7 @@ export type MenuChild = {
   method?: string;
   content?: string;
   children?: MenuChild[];
+  codesnippet?: string;
 };
 
 export type MenuSection = {
@@ -22,7 +23,8 @@ export const menuData: MenuSection[] = [
         title: "Register",
         content:
           "Register on RemitaConnect: Sign up at RemitaConnect to create your account and obtain your Public and Secret Keys. Important Note: You immediately have access to all our available new services on our test environment and you can access them using your keys. Activate Your Account: Once registered, activate your account as directed on the web application to access production credentials. Subscribe to Services: To enable a service, subscribe to it on the web application. After approval, you'll be ready to use the service in production.",
-      },
+       codesnippet: "codesnp"
+        },
     ],
   },
   {
@@ -34,8 +36,11 @@ export const menuData: MenuSection[] = [
         method: "POST",
         title: "Generate Token",
         content: "Generate an authentication token using your first generation API credentials.",
+         codesnippet: "codee"
+        
       },
     ],
+   
   },
   {
     id: "accept-payments",
@@ -45,6 +50,7 @@ export const menuData: MenuSection[] = [
         id: "accept-online-payments",
         title: "Accept Online Payments",
         content: "Accept online payments through our secure payment gateway.",
+        codesnippet: "Knoxon"
       },
       {
         id: "invoice-generation",
@@ -55,6 +61,7 @@ export const menuData: MenuSection[] = [
         id: "direct-debit-non-fi",
         title: "Direct Debit (For Non-Financial Institutions)",
         content: "Initiate direct debit transactions for non-financial institutions.",
+        
       },
       {
         id: "direct-debit-fi",
@@ -66,6 +73,8 @@ export const menuData: MenuSection[] = [
   {
     id: "funds-transfer",
     title: "Funds Transfer",
+    
+    
     children: [
       {
         id: "ft-rest",
@@ -76,8 +85,10 @@ export const menuData: MenuSection[] = [
         id: "ft-soap",
         title: "SOAP Interface",
         content: "Utilize our SOAP API for enterprise-level funds transfer solutions.",
+         codesnippet: "cokdee"
       },
     ],
+   
   },
   {
     id: "collections",
@@ -89,7 +100,9 @@ export const menuData: MenuSection[] = [
         content: "Streamlined processing of collections for a wide range of Billers - from Government institutions to other Businesses.",
       },
     ],
+    
   },
+  
   {
     id: "vending-bills",
     title: "Vending Bills",
@@ -145,4 +158,5 @@ export const menuData: MenuSection[] = [
       },
     ],
   },
+  
 ];

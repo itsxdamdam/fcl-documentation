@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Card from "../components/card/Cardcomp";
 import { menuData } from "../Lib/menuData";
+import CodePart from "../components/card/codepart"
 
 // Flatten every trackable id (sections, items, and nested children) in document order
 function getAllTrackableIds(): string[] {
@@ -86,35 +87,53 @@ export default function Home() {
 
     return () => observer.disconnect();
   }, []);
-
+console.log('activeId', activeId)
   return (
     <main
       style={{
         display: "flex",
         minHeight: "100vh",
+        paddingTop: "50px",
       }}
     >
       <Sidebar handleContent={handleContent} activeId={activeId} />
-
       <div
         style={{
           flex: 1,
           padding: "40px",
-          maxWidth: "720px",
+          maxWidth: "500px",
         }}
       >
         <Card data={menuData} />
       </div>
 
-      <div
+      <div>
+        <div style={{
+          position: "fixed",
+          width: "300px"
+      
+        }} >
+      <CodePart activeId={activeId}  />
+
+        </div>
+
+      {/* <div
         style={{
           minHeight: "100vh",
           backgroundColor: "#159890",
           width: "500px",
           position: "sticky",
           top: 0,
+          display: "flex",
+          justifyContent: "center",
         }}
-      />
+      >
+      <div style={{padding: "20px", paddingTop: "200px" }}>
+        <CodePart />
+      </div> */}
+      </div>
+
+
     </main>
   );
 }
