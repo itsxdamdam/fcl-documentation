@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MenuItem from "./MenuItem";
-import { menuData } from "../Lib/menuData";
+import { menuData } from "@/Lib/menuData";
 
 export default function Sidebar({
   handleContent,
@@ -13,7 +13,16 @@ export default function Sidebar({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
- 
+  const [expandedSections, setExpandedSections] = useState<string[]>([]);
+
+  const toggleSection = (sectionId: string) => {
+    if (expandedSections.includes(sectionId)) {
+      setExpandedSections(expandedSections.filter((id) => id !== sectionId));
+    } else {
+      setExpandedSections([...expandedSections, sectionId]);
+    }
+  };
+
   useEffect(() => {
     if (!activeId || !containerRef.current) return;
     const el = document.getElementById(`menu-${activeId}`);
@@ -35,46 +44,73 @@ export default function Sidebar({
         borderRight: "1px solid #ddd",
         overflowY: "auto",
         padding: "20px",
+        boxSizing: "border-box", 
       }}
     >
       <h2
         style={{
           fontSize: "12px",
-          marginBottom: "27px",
+          marginBottom: "15px",
           cursor: "pointer",
         }}
       >
         Fastcredit APIS
       </h2>
-      <p style={{ fontSize: "12px", marginBottom: "20px", cursor: "pointer" }}>
-        introduction
-      </p>
 
-      {menuData.map((section) => (
-        <div key={section.id} style={{ marginBottom: "16px" }}>
-          <p
-            id={`menu-${section.id}`}
-            style={{
-              fontSize: "13px",
-              fontWeight: 700,
-              marginBottom: "8px",
-              color: activeId === section.id ? "#d97706" : "#333",
-              cursor: "pointer",
-            }}
-            onClick={() => handleContent(section.id)}
-          >
-            {section.title}
-          </p>
-          {section.children.map((child) => (
-            <MenuItem
-              key={child.id}
-              item={child}
-              onItemClick={handleContent}
-              activeId={activeId}
-            />
-          ))}
-        </div>
-      ))}
+      {menuData?.map((section) => {
+      
+        const isExpanded = expandedSections.includes(section.id);
+
+        return (
+          <div key={section.id} style={{ marginBottom: "16px" }}>
+            <p
+              id={`menu-${section.id}`}
+              style={{
+                fontSize: "13px",
+                fontWeight: 700,
+                marginBottom: "8px",
+                color: activeId === section.id ? "#d97706" : "#333",
+                cursor: "pointer",
+                display: "flex",
+                justifyContent: "left", 
+                alignItems: "center"
+              }}
+              onClick={() => {
+                handleContent(section.id);
+                toggleSection(section.id); 
+              }}
+            >
+              <span>{section.id}</span>
+              {section.children && (
+                <span style={{ fontSize: "10px", color: "#999" }}>
+                  {isExpanded ? "▲" : "▼"}
+                </span>
+              )}
+            </p>
+
+          
+            {isExpanded && section.children && (
+              <div style={{ marginLeft: "15px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                {section.children?.map((child) => (
+                  <span
+                    key={child.id}
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: activeId === child.id ? 600 : 400,
+                      color: activeId === child.id ? "#d97706" : "#666",
+                      cursor: "pointer",
+                      padding: "2px 0"
+                    }}
+                    onClick={() => handleContent(child.id)}
+                  >
+                    {child.id}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -3,160 +3,96 @@ export type MenuChild = {
   title: string;
   method?: string;
   content?: string;
-  children?: MenuChild[];
+  url?: string;
   codesnippet?: string;
+  children?: MenuChild[];
 };
 
-export type MenuSection = {
+export interface MenuSection {
   id: string;
   title: string;
-  children: MenuChild[];
-};
+  content: string;
+  url?: string;
+  children?: MenuSection[];
+}
 
-export const menuData: MenuSection[] = [
-  {
-    id: "auth-new",
-    title: "Authentication- New APIs",
-    children: [
-      {
-        id: "auth-new-register",
-        title: "Register",
-        content:
-          "Register on RemitaConnect: Sign up at RemitaConnect to create your account and obtain your Public and Secret Keys. Important Note: You immediately have access to all our available new services on our test environment and you can access them using your keys. Activate Your Account: Once registered, activate your account as directed on the web application to access production credentials. Subscribe to Services: To enable a service, subscribe to it on the web application. After approval, you'll be ready to use the service in production.",
-       codesnippet: "codesnp"
-        },
-    ],
-  },
-  {
-    id: "auth-first",
-    title: "Authentication- First Generation APIs",
-    children: [
-      {
-        id: "auth-first-token",
-        method: "POST",
-        title: "Generate Token",
-        content: "Generate an authentication token using your first generation API credentials.",
-         codesnippet: "codee"
-        
-      },
-    ],
-   
-  },
-  {
-    id: "accept-payments",
-    title: "Accept Payments",
-    children: [
-      {
-        id: "accept-online-payments",
-        title: "Accept Online Payments",
-        content: "Accept online payments through our secure payment gateway.",
-        codesnippet: "Knoxon"
-      },
-      {
-        id: "invoice-generation",
-        title: "Invoice Generation",
-        content: "Generate invoices for your customers.",
-      },
-      {
-        id: "direct-debit-non-fi",
-        title: "Direct Debit (For Non-Financial Institutions)",
-        content: "Initiate direct debit transactions for non-financial institutions.",
-        
-      },
-      {
-        id: "direct-debit-fi",
-        title: "Direct Debit (For Financial Institutions)",
-        content: "Initiate direct debit transactions for financial institutions.",
-      },
-    ],
-  },
-  {
-    id: "funds-transfer",
-    title: "Funds Transfer",
+export const menuData: MenuChild[] = [
+  
+   {
+    id : "introduction",
+    title: "Fast Credit APIs",
+    content: `
+
+Welcome to the Fast Credit API documentation.
+
+The Fast Credit API provides a secure and scalable set of REST APIs that allow developers to integrate digital onboarding, identity verification, authentication, customer profile management, and account services into their applications.
+
+Built on modern REST standards, the APIs are designed to simplify customer registration, verification, profile management, and validation workflows while maintaining enterprise-grade security and performance.
+
+The APIs are grouped into logical services to make integration easier.
+
+Our current API suite includes:
+
+<br>User Management
+Customer Profile Settings
+Validation Services
+Lookup Services
+Accounting Services
+Authentication Services<br>
+
+Every request should include the required authorization token unless stated otherwise.`,
+    url: "introduction-service",
     
-    
-    children: [
-      {
-        id: "ft-rest",
-        title: "Rest Interface",
-        content: "Access our REST API for seamless funds transfer operations.",
-      },
-      {
-        id: "ft-soap",
-        title: "SOAP Interface",
-        content: "Utilize our SOAP API for enterprise-level funds transfer solutions.",
-         codesnippet: "cokdee"
-      },
-    ],
-   
   },
   {
-    id: "collections",
-    title: "Collections",
-    children: [
-      {
-        id: "collections-overview",
-        title: "Overview",
-        content: "Streamlined processing of collections for a wide range of Billers - from Government institutions to other Businesses.",
-      },
-    ],
-    
+    id: "User management",
+    title: "User management",
+    url: "authentication-service",
+    content: "Manage customer registration and authentication",
+    codesnippet: `// Example code snippet
+`,
+  },
+
+  {
+    id: "Register New User",
+    title: "Register New User",
+    method: "POST",
+    content: "/user-management/api/v1/Users/register",
+    url: "register-new-user",
+  },
+
+  {
+    id: "Customer profile settings",
+    title: "Customer Profile Settings",
+    content: "Manage customer profile settings",
+    url: "customer-profile-settings", 
+  },
+
+  {
+    id: "Get Instant Payment Status",
+    title: "Get Instant Payment Status",
+    method: "GET",
+    content: "/payment/api/v1/instant-payment-status",
+    url: "get-instant-payment-status",
+  },
+
+  {
+    id: "Update Instant Payment Status",
+    title: "Update Instant Payment Status",
+    method: "PUT",
+    content: "/user-management/api/v1/CustomerProfileSettings/instant-payment",
+    url: "update-instant-payment-status",
+  },
+
+  {
+    id: "Update Email Address",
+    title: "Update Email Address",
+    method: "PUT",
+    content: "/user-management/api/v1/CustomerProfileSettings/update-email",
+    url: "update-email-address",
   },
   
-  {
-    id: "vending-bills",
-    title: "Vending Bills",
-    children: [
-      {
-        id: "vending-overview",
-        title: "Overview",
-        content: "A focused service for purchasing Airtime, Data, Electricity, and other utilities.",
-      },
-    ],
-  },
-  {
-    id: "inflight-collections",
-    title: "Inflight Collections",
-    children: [
-      {
-        id: "inflight-overview",
-        title: "Overview",
-        content: "Manage and process inflight collection transactions in real time.",
-      },
-    ],
-  },
-  {
-    id: "verification-service",
-    title: "Verification Service",
-    children: [
-      {
-        id: "verification-overview",
-        title: "Overview",
-        content: "Offering reliable data verification for individuals and businesses.",
-      },
-    ],
-  },
-  {
-    id: "nrs-einvoice",
-    title: "NRS e-Invoice",
-    children: [
-      {
-        id: "nrs-overview",
-        title: "Overview",
-        content: "Generate and manage e-Invoices in compliance with NRS requirements.",
-      },
-    ],
-  },
-  {
-    id: "general-reference",
-    title: "General Reference",
-    children: [
-      {
-        id: "general-overview",
-        title: "Overview",
-        content: "General reference material, error codes, and response formats used across all APIs.",
-      },
-    ],
-  },
+ 
   
-];
+  
+]

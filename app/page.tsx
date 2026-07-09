@@ -6,15 +6,19 @@ import Card from "../components/card/Cardcomp";
 import { menuData } from "../Lib/menuData";
 import CodePart from "../components/card/codepart"
 
+
+
 // Flatten every trackable id (sections, items, and nested children) in document order
 function getAllTrackableIds(): string[] {
   const ids: string[] = [];
   for (const section of menuData) {
     ids.push(section.id);
-    for (const item of section.children) {
+    for (const item of section.children || []
+      
+    ) {
       ids.push(item.id);
-      if (item.children) {
-        for (const child of item.children) {
+      if (item.url) {
+        for (const child of item.url) {
           ids.push(child.id);
         }
       }

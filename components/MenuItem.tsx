@@ -43,8 +43,10 @@ export default function MenuItem({
             {item.method}
           </span>
         )}
-        {item.title}
+        {item.id}
       </p>
+
+      
 
       {item.children?.map((child) => (
         <div key={child.id} style={{ marginLeft: "20px" }}>

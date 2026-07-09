@@ -1,7 +1,9 @@
 import React from "react";
-import { MenuSection } from "../../Lib/menuData";
+import { menuData} from "../../Lib/menuData";
+import type { MenuChild } from "../../Lib/menuData";
 
-export default function Card({ data }: { data: MenuSection[] }) {
+
+export default function Card({ data }: { data: MenuChild[] }) {
   return (
     <div>
       {data.map((section) => (
@@ -17,10 +19,12 @@ export default function Card({ data }: { data: MenuSection[] }) {
               fontWeight: "bold",
               fontSize: "26px",
               marginBottom: "10px",
+              
             }}
           >
             {section.title}
           </h1>
+            <p>{section.content}</p>
 
           {section.children?.map((item) => (
             <div
@@ -31,7 +35,7 @@ export default function Card({ data }: { data: MenuSection[] }) {
               <h2
                 style={{
                   fontSize: "16px",
-                  color: "#333",
+                  color: "#555",
                   fontWeight: 600,
                   marginBottom: "6px",
                   display: "flex",
@@ -39,6 +43,7 @@ export default function Card({ data }: { data: MenuSection[] }) {
                   gap: "8px",
                 }}
               >
+                
                 {item.method && (
                   <span
                     style={{
@@ -52,15 +57,16 @@ export default function Card({ data }: { data: MenuSection[] }) {
                 )}
                 {item.title}
               </h2>
-              <p
+              <h3
                 style={{
                   fontSize: "14px",
-                  color: "#444",
-                  lineHeight: 1.6,
+                  color: "#555",
+                  fontWeight: 600
                 }}
               >
                 {item.content}
-              </p>
+              </h3>
+          
 
               {item.children?.map((child) => (
                 <div
@@ -77,11 +83,7 @@ export default function Card({ data }: { data: MenuSection[] }) {
                   >
                     {child.title}
                   </h3>
-                  <p
-                    style={{ fontSize: "14px", color: "#444", lineHeight: 1.6 }}
-                  >
-                    {child.content}
-                  </p>
+                
                 </div>
               ))}
             </div>
