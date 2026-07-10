@@ -45,7 +45,7 @@ export default function CodePart({ activeId }: Props) {
         >
           {menuItem?.codesnippet && (
             <pre>
-              <code>{menuItem.codesnippet}</code>
+              <code>{menuItem.codesnippet&& menuItem.codesnippet}</code>
             </pre>
           )}
         </div>

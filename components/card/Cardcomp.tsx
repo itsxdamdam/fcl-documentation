@@ -52,7 +52,7 @@ export default function Card({ data }: { data: MenuChild[] }) {
                       color: item.method === "POST" ? "#d97706" : "#2e9e5b",
                     }}
                   >
-                    {item.method}
+                    {item.method},
                   </span>
                 )}
                 {item.title}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Card from "../components/card/Cardcomp";
-import { menuData } from "../Lib/menuData";
+import  { menuData } from "../Lib/menuData";
 import CodePart from "../components/card/codepart"
 
 
@@ -83,7 +83,7 @@ export default function Home() {
         // Trigger when a section enters the upper portion of the viewport,
         // so it switches as soon as the previous section's content has scrolled past.
         rootMargin: "-15% 0px -70% 0px",
-        threshold: [0, 0.1, 0.5, 1],
+        threshold: [0, 0.1, 0.1, 1],
       }
     );
 
@@ -91,7 +91,7 @@ export default function Home() {
 
     return () => observer.disconnect();
   }, []);
-console.log('activeId', activeId)
+
   return (
     <main
       style={{
