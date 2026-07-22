@@ -1,107 +1,83 @@
-import React from "react";
-import { menuData} from "../../Lib/menuData";
-import type { MenuChild } from "../../Lib/menuData";
+"use client";
 
+import { MenuChild } from "@/Lib/menuData";
 
-export default function Card({ data }: { data: MenuChild[] }) {
+interface Props {
+  data: MenuChild[];
+}
+
+export default function Card({ data }: Props) {
   return (
     <div>
       {data.map((section) => (
-        <div
-          key={section.id}
-          id={section.id}
-          style={{ marginBottom: "60px", scrollMarginTop: "40px",}}
-        >
-          <h1
-            style={{
-              textAlign: "left",
-              paddingBottom: "10px",
-              fontWeight: "bold",
-              fontSize: "26px",
-              marginBottom: "10px",
+        <div key={section.id} style={{ marginBottom: "60px" }}>
+          {/* Section heading — id needed so scroll-spy can highlight the section itself */}
+          <div id={section.id} style={{ scrollMarginTop: "80px" }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 700, marginBottom: "8px" }}>
+              {section.title}
+            </h2>
+            {section.content && (
+              <p style={{ fontSize: "14px", color: "#555", marginBottom: "20px" }}>
+                {section.content}
+              </p>
               
-            }}
-          >
-            {section.title}
-          </h1>
-            <p>{section.content}</p>
+            )}
+          </div>
 
-          {section.children?.map((item) => (
+          {/* Each endpoint/child needs its OWN id — this is what CodePart looks up */}
+          {section.children?.map((child) => (
             <div
-              key={item.id}
-              id={item.id}
-              style={{ marginBottom: "30px", scrollMarginTop: "40px" }}
+              key={child.id}
+              id={child.id}
+              style={{
+                marginBottom: "40px",
+                paddingTop: "20px",
+                scrollMarginTop: "800px", // keeps scrollIntoView from tucking content under a sticky header
+              }}
             >
-              <h2
-                style={{
-                  fontSize: "16px",
-                  color: "#555",
-                  fontWeight: 600,
-                  marginBottom: "6px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                
-                {item.method && (
+              <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "6px" }}>
+                {child.method && (
                   <span
                     style={{
                       fontSize: "11px",
                       fontWeight: 700,
-                      color: item.method === "POST" ? "#d97706" : "#2e9e5b",
+                      color: "#fff",
+                      backgroundColor: "#d97706",
+                      padding: "2px 6px",
+                      borderRadius: "4px",
+                      marginRight: "8px",
                     }}
                   >
-                    {item.method},
+                    {child.method}
                   </span>
                 )}
-                {item.title}
-              </h2>
-              <h3
-                style={{
-                  fontSize: "14px",
-                  color: "#555",
-                  fontWeight: 600
-                }}
-              >
-                {item.content}
+                {child.title}
               </h3>
-          
 
-              {item.children?.map((child) => (
-                <div
-                  key={child.id}
-                  id={child.id}
-                  style={{
-                    marginLeft: "20px",
-                    marginBottom: "16px",
-                    scrollMarginTop: "40px",
-                  }}
-                >
-                  <h3
-                    style={{ fontSize: "15px", color: "#555", fontWeight: 600 }}
-                  >
-                    {child.title}
-                  </h3>
+              {child.url && (
+                <code style={{ fontSize: "13px", color: "#666" }}>{child.url}</code>
+              )}
+
+              {child.content && (
+                <p style={{ fontSize: "14px", color: "#444", marginTop: "8px" }}>
+                  {child.content}
+                </p>
                 
-                </div>
-              ))}
-            </div>
+              )}
+
+         
+ 
+      </div>
+    // </div>
+    //           {codepart.activeid}
+    //         </div>
+            
           ))}
-          <hr
-            style={{
-              border: "none",
-              borderStyle: "solid",
-              borderColor: "#f3f3f3",
-              borderWidth: "1px",
-              marginTop: "40px",
-            }}
-          />
+          
         </div>
       ))}
-
-      {/* spacer so the last section can scroll all the way up and still trigger as active */}
-      <div style={{ height: "60vh" }} />
     </div>
+    
   );
+  
 }

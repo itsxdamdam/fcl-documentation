@@ -1,5 +1,7 @@
 import { MenuChild, menuData} from "@/Lib/menuData";
 import React, { useEffect, useState } from "react";
+import MenuItem from "../MenuItem";
+
 
 
 interface Props {
@@ -23,33 +25,36 @@ export default function CodePart({ activeId }: Props) {
     <div 
       style={{
         height: "1000vh",
-        backgroundColor: "#bb1e16",
+        backgroundColor: "#616161",
         width: "500px",
-        position: "sticky",
-        top: 0,
+        paddingTop:"200px",
+       
         display: "flex",
         justifyContent: "center",
       }}
     >
       
-      <div style={{ padding: "20px", paddingTop: "200px" }}>
-        <div
+
+             <div
           style={{
+            
+             paddingTop: "200px",
             backgroundColor: "#0d0d0d",
-            padding: "50px",
+            padding: "100px",
             borderRadius: "2px",
             overflowX: "auto",
             width: "450px",
+            height: "10px",
             color: "#f3f3f3",
           }}
         >
-          {menuItem?.codesnippet && (
-            <pre>
-              <code>{menuItem.codesnippet&& menuItem.codesnippet}</code>
-            </pre>
-          )}
+        vvyvv
+          
         </div>
-      </div>
+        
+      
+      
     </div>
   );
 }
+

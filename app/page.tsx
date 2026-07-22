@@ -3,32 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Card from "../components/card/Cardcomp";
-import  { menuData } from "../Lib/menuData";
-import CodePart from "../components/card/codepart"
-
-
+import { MenuChild, menuData } from "../Lib/menuData";
+import CodePart from "../components/card/codepart";
 
 // Flatten every trackable id (sections, items, and nested children) in document order
-function getAllTrackableIds(): string[] {
+function getAllTrackableIds(items: MenuChild[] = menuData): string[] {
   const ids: string[] = [];
-  for (const section of menuData) {
-    ids.push(section.id);
-    for (const item of section.children || []
-      
-    ) {
-      ids.push(item.id);
-      if (item.url) {
-        for (const child of item.url) {
-          ids.push(child.id);
-        }
-      }
+
+  items.forEach((item) => {
+    ids.push(item.id);
+    if (item.children?.length) {
+      ids.push(...getAllTrackableIds(item.children));
     }
-  }
+  });
+
   return ids;
 }
 
 export default function Home() {
-  const [activeId, setActiveId] = useState<string | null>(menuData[0]?.id ?? null);
+  const [activeId, setActiveId] = useState<string | null>(
+    menuData[0]?.id ?? null,
+  );
   const isClickScrolling = useRef(false);
   const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -84,7 +79,7 @@ export default function Home() {
         // so it switches as soon as the previous section's content has scrolled past.
         rootMargin: "-15% 0px -70% 0px",
         threshold: [0, 0.1, 0.1, 1],
-      }
+      },
     );
 
     elements.forEach((el) => observer.observe(el));
@@ -112,16 +107,16 @@ export default function Home() {
       </div>
 
       <div>
-        <div style={{
-          position: "fixed",
-          width: "300px"
-      
-        }} >
-      <CodePart activeId={activeId}  />
-
+        <div
+          style={{
+            position: "fixed",
+            width: "300px",
+          }}
+        >
+          <CodePart activeId={activeId} />
         </div>
 
-      {/* <div
+        {/* <div
         style={{
           minHeight: "100vh",
           backgroundColor: "#159890",
@@ -136,8 +131,6 @@ export default function Home() {
         <CodePart />
       </div> */}
       </div>
-
-
     </main>
   );
 }
