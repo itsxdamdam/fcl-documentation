@@ -6,12 +6,12 @@ import Card from "../components/card/Cardcomp";
 import { MenuChild, menuData } from "../Lib/menuData";
 import CodePart from "../components/card/codepart";
 
-// Flatten every trackable id (sections, items, and nested children) in document order
 function getAllTrackableIds(items: MenuChild[] = menuData): string[] {
   const ids: string[] = [];
 
   items.forEach((item) => {
     ids.push(item.id);
+
     if (item.children?.length) {
       ids.push(...getAllTrackableIds(item.children));
     }
@@ -24,50 +24,62 @@ export default function Home() {
   const [activeId, setActiveId] = useState<string | null>(
     menuData[0]?.id ?? null,
   );
+
   const isClickScrolling = useRef(false);
+
   const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Click in sidebar -> smooth scroll content to that section
   const handleContent = (id: string) => {
-    const el = document.getElementById(id);
+    const el = document.getElementById(`card-${id}`);
+
     if (el) {
       isClickScrolling.current = true;
-      setActiveId(id);
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
 
-      // Re-enable scroll-spy tracking shortly after the smooth scroll settles
-      if (clickTimeout.current) clearTimeout(clickTimeout.current);
+      setActiveId(id);
+
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      if (clickTimeout.current) {
+        clearTimeout(clickTimeout.current);
+      }
+
       clickTimeout.current = setTimeout(() => {
         isClickScrolling.current = false;
       }, 700);
     }
   };
 
-  // Scroll-spy: watch every section/item and update activeId as the user scrolls
   useEffect(() => {
     const ids = getAllTrackableIds();
+
     const elements = ids
-      .map((id) => document.getElementById(id))
+      .map((id) => document.getElementById(`card-${id}`))
       .filter((el): el is HTMLElement => el !== null);
 
     const visibleMap = new Map<string, number>();
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isClickScrolling.current) return;
+        if (isClickScrolling.current) {
+          return;
+        }
 
         entries.forEach((entry) => {
+          const id = entry.target.id.replace("card-", "");
+
           if (entry.isIntersecting) {
-            visibleMap.set(entry.target.id, entry.intersectionRatio);
+            visibleMap.set(id, entry.intersectionRatio);
           } else {
-            visibleMap.delete(entry.target.id);
+            visibleMap.delete(id);
           }
         });
 
         if (visibleMap.size > 0) {
-          // Pick whichever visible section appears first in document order,
-          // so "next item" activates as soon as the previous one scrolls past.
           const topMostId = ids.find((id) => visibleMap.has(id));
+
           if (topMostId) {
             setActiveId((prev) => (prev === topMostId ? prev : topMostId));
           }
@@ -75,16 +87,16 @@ export default function Home() {
       },
       {
         root: null,
-        // Trigger when a section enters the upper portion of the viewport,
-        // so it switches as soon as the previous section's content has scrolled past.
         rootMargin: "-15% 0px -70% 0px",
-        threshold: [0, 0.1, 0.1, 1],
+        threshold: [0, 0.1, 0.5, 1],
       },
     );
 
     elements.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return (
@@ -93,56 +105,36 @@ export default function Home() {
         display: "flex",
         minHeight: "100vh",
         paddingTop: "50px",
+        backgroundColor: "#fff",
       }}
     >
       <Sidebar handleContent={handleContent} activeId={activeId} />
-      <div
+
+      <section
         style={{
           flex: 1,
+          minWidth: 0,
           padding: "40px",
-          maxWidth: "500px",
+          maxWidth: "600px",
+          boxSizing: "border-box",
         }}
       >
         <Card data={menuData} />
-      </div>
+      </section>
 
-      <div>
-        <div
-          style={{
-            position: "fixed",
-            width: "300px",
-          }}
-        >
-          <CodePart activeId={activeId} />
-        </div>
-
-        {/* <div
+      <aside
         style={{
-          minHeight: "100vh",
-          backgroundColor: "#159890",
-          width: "500px",
+          width: "50%",
+          minWidth: "500px",
           position: "sticky",
-          top: 0,
-          display: "flex",
-          justifyContent: "center",
+          top: "50px",
+          height: "calc(100vh - 50px)",
+          overflow: "hidden",
+          boxSizing: "border-box",
         }}
       >
-      <div style={{padding: "20px", paddingTop: "200px" }}>
-        <CodePart />
-      </div> */}
-      </div>
+        <CodePart activeId={activeId} />
+      </aside>
     </main>
   );
 }
-// export default function RootLayout({ children }) {
-//   return (
-//     <html lang="en">
-//       <body className="pt-16"> {/* Matches the h-16 (64px) of your navbar */}
-//         <Navbar />
-//         <main className="container mx-auto px-4 py-8">
-//           {children}
-//         </main>
-//       </body>
-//     </html>
-//   );
-// }
