@@ -1,140 +1,169 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Card from "../components/card/Cardcomp";
-import { MenuChild, menuData } from "../Lib/menuData";
 import CodePart from "../components/card/codepart";
+import { flatten } from "../utils/tree";
+import { getColors, type Theme } from "../utils/theme";
+import type { Language } from "../utils/apiExamples";
 
-function getAllTrackableIds(items: MenuChild[] = menuData): string[] {
-  const ids: string[] = [];
-
-  items.forEach((item) => {
-    ids.push(item.id);
-
-    if (item.children?.length) {
-      ids.push(...getAllTrackableIds(item.children));
-    }
-  });
-
-  return ids;
-}
+type LayoutMode = "Double Column" | "Single Column";
 
 export default function Home() {
-  const [activeId, setActiveId] = useState<string | null>(
-    menuData[0]?.id ?? null,
-  );
+  const [activeKey, setActiveKey] = useState<string | null>("0");
+  const [theme, setTheme] = useState<Theme>("light");
+  const [layout, setLayout] = useState<LayoutMode>("Double Column");
+  const [language, setLanguage] = useState<Language>("JavaScript - Fetch");
 
+  const colors = useMemo(() => getColors(theme), [theme]);
+  const centerRef = useRef<HTMLDivElement>(null);
   const isClickScrolling = useRef(false);
-
   const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleContent = (id: string) => {
-    const el = document.getElementById(`card-${id}`);
+  const allKeys = useMemo(() => flatten().map((node) => node._key), []);
 
-    if (el) {
-      isClickScrolling.current = true;
+  const handleSelect = (key: string) => {
+    const el = document.getElementById(`card-${key}`);
 
-      setActiveId(id);
+    if (!el) return;
 
-      el.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    isClickScrolling.current = true;
+    setActiveKey(key);
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
 
-      if (clickTimeout.current) {
-        clearTimeout(clickTimeout.current);
-      }
-
-      clickTimeout.current = setTimeout(() => {
-        isClickScrolling.current = false;
-      }, 700);
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", `#${key}`);
     }
+
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current);
+    }
+
+    clickTimeout.current = setTimeout(() => {
+      isClickScrolling.current = false;
+    }, 700);
   };
 
+  // Deep-link support: open directly on the endpoint named in the URL hash.
   useEffect(() => {
-    const ids = getAllTrackableIds();
+    const key = window.location.hash.replace(/^#/, "");
+    if (!key) return;
 
-    const elements = ids
-      .map((id) => document.getElementById(`card-${id}`))
+    const el = document.getElementById(`card-${key}`);
+    if (!el) return;
+
+    isClickScrolling.current = true;
+    setActiveKey(key);
+    el.scrollIntoView({ block: "start" });
+
+    if (clickTimeout.current) clearTimeout(clickTimeout.current);
+    clickTimeout.current = setTimeout(() => {
+      isClickScrolling.current = false;
+    }, 700);
+  }, []);
+
+  // Scroll-spy: highlight the endpoint currently in view within the center column.
+  useEffect(() => {
+    const root = centerRef.current;
+    if (!root) return;
+
+    const elements = allKeys
+      .map((key) => document.getElementById(`card-${key}`))
       .filter((el): el is HTMLElement => el !== null);
 
-    const visibleMap = new Map<string, number>();
+    const visible = new Map<string, number>();
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isClickScrolling.current) {
-          return;
-        }
+        if (isClickScrolling.current) return;
 
         entries.forEach((entry) => {
-          const id = entry.target.id.replace("card-", "");
+          const key = entry.target.id.replace("card-", "");
 
           if (entry.isIntersecting) {
-            visibleMap.set(id, entry.intersectionRatio);
+            visible.set(key, entry.intersectionRatio);
           } else {
-            visibleMap.delete(id);
+            visible.delete(key);
           }
         });
 
-        if (visibleMap.size > 0) {
-          const topMostId = ids.find((id) => visibleMap.has(id));
+        const topMost = allKeys.find((key) => visible.has(key));
 
-          if (topMostId) {
-            setActiveId((prev) => (prev === topMostId ? prev : topMostId));
-          }
+        if (topMost) {
+          setActiveKey((prev) => (prev === topMost ? prev : topMost));
         }
       },
       {
-        root: null,
-        rootMargin: "-15% 0px -70% 0px",
+        root,
+        rootMargin: "-10% 0px -70% 0px",
         threshold: [0, 0.1, 0.5, 1],
       },
     );
 
     elements.forEach((el) => observer.observe(el));
 
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+    return () => observer.disconnect();
+  }, [allKeys]);
+
+  const doubleColumn = layout === "Double Column";
 
   return (
-    <main
+    <div
       style={{
+        height: "100vh",
         display: "flex",
-        minHeight: "100vh",
-        paddingTop: "50px",
-        backgroundColor: "#fff",
+        flexDirection: "column",
+        backgroundColor: colors.centerBg,
+        color: colors.centerText,
       }}
     >
-      <Sidebar handleContent={handleContent} activeId={activeId} />
+      {/* <Header
+        colors={colors}
+        theme={theme}
+        onToggleTheme={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
+        layout={layout}
+        onLayoutChange={setLayout}
+        language={language}
+        onLanguageChange={setLanguage}
+      /> */}
 
-      <section
+      <div
         style={{
+          display: "flex",
           flex: 1,
-          minWidth: 0,
-          padding: "40px",
-          maxWidth: "600px",
-          boxSizing: "border-box",
+          minHeight: 0,
+          // marginTop: "52px",
         }}
       >
-        <Card data={menuData} />
-      </section>
+        <Sidebar
+          activeKey={activeKey}
+          onSelect={handleSelect}
+          colors={colors}
+        />
 
-      <aside
-        style={{
-          width: "50%",
-          minWidth: "500px",
-          position: "sticky",
-          top: "50px",
-          height: "calc(100vh - 50px)",
-          overflow: "hidden",
-          boxSizing: "border-box",
-        }}
-      >
-        <CodePart activeId={activeId} />
-      </aside>
-    </main>
+        <main
+          ref={centerRef}
+          style={{
+            flex: 1,
+            minWidth: 0,
+            height: "100%",
+            overflowY: "auto",
+            padding: "12px 48px 120px",
+            boxSizing: "border-box",
+            backgroundColor: colors.centerBg,
+          }}
+        >
+          <div style={{ maxWidth: "760px" }}>
+            <Card colors={colors} layout={layout} language={language} />
+          </div>
+        </main>
+
+        {doubleColumn && (
+          <CodePart activeKey={activeKey} colors={colors} language={language} />
+        )}
+      </div>
+    </div>
   );
 }
