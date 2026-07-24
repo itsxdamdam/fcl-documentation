@@ -221,9 +221,10 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
           justifyContent: "left",
           paddingLeft:"50px",
           width: "100%",
+          fontWeight:"700",
         }}
       >
-       Fcl Api
+      Fast Credit APIs
       </div>
 
       {annotatedMenu.map((node) => (
