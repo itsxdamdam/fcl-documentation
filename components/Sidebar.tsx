@@ -194,13 +194,11 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
     >
       <div
         style={{
-          border: `1px solid ${colors.border}`,
           padding: "12px 5px",
           marginBottom: "16px",
-          backgroundColor: "#da2529",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "left",
           width: "100%",
         }}
       >
@@ -211,6 +209,21 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
           height={61}
           style={{ height: "34px", width: "auto" }}
         />
+      </div>
+           <div
+        style={{
+          border: `1px solid ${colors.border}`,
+          padding: "12px 5px",
+          marginBottom: "16px",
+          // backgroundColor: "#da2529",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "left",
+          paddingLeft:"50px",
+          width: "100%",
+        }}
+      >
+       Fcl Api
       </div>
 
       {annotatedMenu.map((node) => (
