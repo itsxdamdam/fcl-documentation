@@ -224,7 +224,7 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
           fontWeight:"700",
         }}
       >
-      Fast Credit APIs
+     FASTCREDIT APIS
       </div>
 
       {annotatedMenu.map((node) => (
