@@ -202,6 +202,13 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
           width: "100%",
         }}
       >
+        {/* <button 
+        onClick={() => {
+          window.location.href = "/";
+        }}
+        >
+          ☰
+        </button> */}
         <Image
           src="/assets/logo.png"
           alt="Fastcredit — Finance Company Limited"

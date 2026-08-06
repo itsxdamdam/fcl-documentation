@@ -75,20 +75,20 @@ Unless otherwise specified, every endpoint requires authentication.
             content: "Manage customer profile preferences and settings.",
             children: [
               {
-                id: "get-instant-payment",
+                id: "Activate/Deactivate Instant Payment for Fund Transfers",
+                title: "Get Instant Payment Status",
+                method: "PUT",
+                url: "/user-management/api/v1/CustomerProfileSettings/instant-payment",
+                content:
+                  "",
+              },
+              {
+                id: "Get-instant-payment",
                 title: "Get Instant Payment Status",
                 method: "GET",
                 url: "/user-management/api/v1/CustomerProfileSettings/instant-payment",
                 content:
-                  "Retrieves the current instant payment status for the authenticated customer.",
-              },
-              {
-                id: "update-instant-payment",
-                title: "Update Instant Payment Status",
-                method: "PUT",
-                url: "/user-management/api/v1/CustomerProfileSettings/instant-payment",
-                content:
-                  "Enable or disable instant payment for fund transfers.",
+                  "",
                 codesnippet: `{
   "status": true
 }`,
@@ -98,7 +98,7 @@ Unless otherwise specified, every endpoint requires authentication.
                 title: "Update Email Address",
                 method: "PUT",
                 url: "/user-management/api/v1/CustomerProfileSettings/update/email",
-                content: "Updates the customer's registered email address.",
+                content: "Updates the email address associated with the user's profile.",
                 codesnippet: `{
   "email": "john@example.com",
   "emailValidationRequestId": "REQ12345"
@@ -406,6 +406,42 @@ The service includes:
 
                 children: [
                   {
+  id: "create-user",
+  title: "Create User",
+  method: "POST",
+  url: "/accounting-service/api/v1/Users",
+  content:
+    "Creates a new user in the system. The request requires the user's personal and account details. On successful creation, the API returns the newly created user's information along with a success status.",
+
+  codesnippet: `// Request
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "phoneNumber": "08012345678",
+  "password": "Password@123",
+  "accountType": "Savings"
+}
+
+// Response
+{
+  "statusCode": "00",
+  "hasErrors": false,
+  "message": "User created successfully",
+  "errors": [],
+  "data": {
+    "userId": "USR001234",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phoneNumber": "08012345678",
+    "accountNumber": "0123456789",
+    "accountType": "Savings",
+    "status": 1
+  }
+}`,
+},
+                  {
                     id: "fetch-accounts",
                     title: "Fetch Accounts",
                     method: "GET",
@@ -434,9 +470,9 @@ The service includes:
                     id: "balance-enquiry",
                     title: "Balance Enquiry",
                     method: "GET",
-                    url: "/accounting-service/api/v1/Accounts/balance",
+                    url: "/accounting-service/api/v1/Accounts/balance/{accountNumber}",
                     content:
-                      "Retrieves the current balance information for a customer account, including the account number, currency, and available working balance.",
+                      "Endpoint to retrieve the current balance of a specified account number. The response includes the account number, currency, and working balance.",
 
                     codesnippet: `{
   "statusCode": "00",
@@ -503,6 +539,71 @@ The service includes:
   "endDate": "2026-01-31"
 }`,
                   },
+                  {
+  id: "fetch-transaction-by-id",
+  title: "Fetch Transaction by ID",
+  method: "GET",
+  url: "/accounting-service/api/v1/Accounts/transactions/{accountNumber}/{transactionId}",
+  content:
+    "Retrieves the complete details of a specific transaction using the account number and transaction reference ID.",
+
+  codesnippet: `// Response
+{
+  "statusCode": "00",
+  "hasErrors": false,
+  "message": "Successful",
+  "errors": [],
+  "data": {
+    "channelReference": "CHN987654321",
+    "debitAccountNumber": "0123456789",
+    "creditAccountNumber": "0987654321",
+    "creditBankName": "Fast Credit Bank",
+    "debitAmount": 5000.00,
+    "debitValueDate": "2026-08-01T09:15:00Z",
+    "creditValueDate": "2026-08-01T09:15:05Z",
+    "paymentDetails": "Transfer Payment",
+    "debitAccountName": "John Doe",
+    "creditAccountName": "Jane Doe",
+    "sessionID": "000123456789",
+    "responseDateTime": "2026-08-01T09:15:06Z",
+    "transactionReceiptUrl": "https://example.com/receipt/TRX123456789",
+    "transactionType": "Interbank Transfer"
+  }
+}`,
+},
+
+{
+  id: "fetch-fund-transfer-details",
+  title: "Fetch Fund Transfer Details",
+  method: "GET",
+  url: "/accounting-service/api/v1/Accounts/transactions/{accountNumber}/fund-transfer/{transactionId}",
+  content:
+    "Retrieves the complete details of a fund transfer using the account number and fund transfer transaction ID.",
+
+  codesnippet: `// Response
+{
+  "statusCode": "00",
+  "hasErrors": false,
+  "message": "Successful",
+  "errors": [],
+  "data": {
+    "channelReference": "FT123456789",
+    "debitAccountNumber": "0123456789",
+    "creditAccountNumber": "1234567890",
+    "creditBankName": "Fast Credit Bank",
+    "debitAmount": 25000.00,
+    "debitValueDate": "2026-08-03T10:30:00Z",
+    "creditValueDate": "2026-08-03T10:30:03Z",
+    "paymentDetails": "Rent Payment",
+    "debitAccountName": "John Doe",
+    "creditAccountName": "Landlord Ltd",
+    "sessionID": "SID123456789",
+    "responseDateTime": "2026-08-03T10:30:04Z",
+    "transactionReceiptUrl": "https://example.com/receipt/FT123456789",
+    "transactionType": "Fund Transfer"
+  }
+}`,
+},
 
                   {
                     id: "todays-transactions",
@@ -531,6 +632,71 @@ The service includes:
 
                 children: [
                   {
+  id: "upgrade-account-tier",
+  title: "Upgrade Account Tier",
+  method: "POST",
+  url: "/accounting-service/api/v1/KYC",
+  content:
+    "Submits a KYC request to upgrade an account tier. The request includes personal information, identification documents, utility bill, and liveness verification images.",
+
+  codesnippet: `// Request (multipart/form-data)
+{
+  "Tier": 2,
+  "HouseAddress": "123 Allen Avenue, Lagos",
+  "NIN": "12345678901",
+  "ValidId.FrontPageBase64Image": "<base64-image>",
+  "ValidId.BackPageBase64Image": "<base64-image>",
+  "ValidId.DocumentType": 1,
+  "ValidId.DocumentIdNumber": "A12345678",
+  "ValidId.RequiresBackpage": true,
+  "UtilityBill.FrontPageBase64Image": "<base64-image>",
+  "UtilityBill.BackPageBase64Image": "<base64-image>",
+  "UtilityBill.DocumentType": 2,
+  "UtilityBill.DocumentIdNumber": "UB123456",
+  "UtilityBill.RequiresBackpage": false
+}
+
+// Response
+{
+  "statusCode": "00",
+  "hasErrors": false,
+  "message": "KYC upgrade request submitted successfully",
+  "errors": []
+}`,
+},
+
+{
+  id: "fetch-upgrade-request",
+  title: "Fetch Upgrade Request",
+  method: "GET",
+  url: "/accounting-service/api/v1/KYC?Tier={tier}",
+  content:
+    "Retrieves an existing account upgrade request together with its verification checks and current review status.",
+
+  codesnippet: `// Response
+{
+  "statusCode": "00",
+  "hasErrors": false,
+  "message": "Successful",
+  "errors": [],
+  "data": {
+    "targetTier": 2,
+    "status": 1,
+    "statusDescription": "Pending",
+    "checks": [
+      {
+        "type": 1,
+        "typeDescription": "NIN Verification",
+        "status": 1,
+        "statusDescription": "Pending",
+        "remark": "",
+        "canEdit": false
+      }
+    ]
+  }
+}`,
+},
+                  {
                     id: "fetch-kyc-details",
                     title: "Get KYC Details",
                     method: "GET",
@@ -550,34 +716,8 @@ The service includes:
 }`,
                   },
 
-                  {
-                    id: "check-upgrade-request",
-                    title: "Check Existing Upgrade Request",
-                    method: "GET",
-                    url: "/accounting-service/api/v1/KYC/upgrade",
-                    content:
-                      "Checks whether an existing account upgrade request is available for a specified account tier.",
+           
 
-                    codesnippet: `{
-  "tier": 2
-}`,
-                  },
-
-                  {
-                    id: "upgrade-account",
-                    title: "Upgrade Account",
-                    method: "POST",
-                    url: "/accounting-service/api/v1/KYC/upgrade",
-                    content:
-                      "Submits an account upgrade request by providing the required KYC information and supporting documents. The endpoint supports identity documents, utility bills, and liveness verification images.",
-
-                    codesnippet: `{
-  "accountNumber": "0123456789",
-  "tier": 3,
-  "documentType": 1,
-  "documentIdNumber": "A12345678"
-}`,
-                  },
 
                   {
                     id: "review-nin-document",
@@ -2005,6 +2145,55 @@ LivenessImages: [
   "BankStatement.DocumentType": 0
 }`,
           },
+          {
+  id: "existing-loan-history",
+  title: "Existing Loan History",
+  method: "GET",
+  url: "/loan-management-service/api/v1/Loans",
+  content:
+    "Retrieves the customer's loan history, including both active and completed loan applications. The response contains loan amounts, repayment progress, outstanding balance, tenure, and loan status.",
+
+  codesnippet: `// Response
+{
+  "statusCode": "00",
+  "hasErrors": false,
+  "message": "Successful",
+  "errors": [],
+  "data": [
+    {
+      "id": "LOAN001",
+      "arrangementId": "ARR123456",
+      "amountApproved": 500000,
+      "monthlyRepayment": 45000,
+      "amountPaid": 180000,
+      "outstandingBalance": 320000,
+      "successfulMonthlyRepaymentCount": 4,
+      "tenureInMonths": 12,
+      "status": 6,
+      "statusDescription": "Active",
+      "earlyRepaymentFeeRate": 2.5,
+      "nextRepayment": {
+        "amount": 45000,
+        "date": "2026-09-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "LOAN002",
+      "arrangementId": "ARR654321",
+      "amountApproved": 300000,
+      "monthlyRepayment": 28000,
+      "amountPaid": 300000,
+      "outstandingBalance": 0,
+      "successfulMonthlyRepaymentCount": 12,
+      "tenureInMonths": 12,
+      "status": 10,
+      "statusDescription": "Completed",
+      "earlyRepaymentFeeRate": 2.5,
+      "nextRepayment": null
+    }
+  ]
+}`,
+},
           {
             id: "active",
             title: "Get the currently active loan",

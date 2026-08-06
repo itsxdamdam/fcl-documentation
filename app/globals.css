@@ -56,3 +56,10 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(140, 140, 140, 0.4) transparent;
 }
+
+.formedia {
+  @media screen and (max-width: 720px) {
+   
+  display: none;
+  }
+}

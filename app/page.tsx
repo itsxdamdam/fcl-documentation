@@ -8,7 +8,7 @@ import CodePart from "../components/card/codepart";
 import { flatten } from "../utils/tree";
 import { getColors, type Theme } from "../utils/theme";
 import type { Language } from "../utils/apiExamples";
-
+import "./globals.css"
 type LayoutMode = "Double Column" | "Single Column";
 
 export default function Home() {
@@ -110,7 +110,7 @@ export default function Home() {
   const doubleColumn = layout === "Double Column";
 
   return (
-    <div
+    <div className="formedia"
       style={{
         height: "100vh",
         display: "flex",
