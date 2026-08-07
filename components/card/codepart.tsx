@@ -19,7 +19,7 @@ export default function CodePart({ activeKey, colors, language }: CodePartProps)
       style={{
         width: "44%",
         minWidth: "440px",
-        maxWidth: "620px",
+        maxWidth: "159px",
         flexShrink: 0,
         height: "100%",
         overflowY: "auto",
