@@ -57,9 +57,10 @@
   scrollbar-color: rgba(140, 140, 140, 0.4) transparent;
 }
 
-.formedia {
-  @media screen and (max-width: 720px) {
-   
-  display: none;
+
+
+@media screen and (max-width: 900px) {
+  .formedia-embed {
+    max-width: 100%;
   }
 }
