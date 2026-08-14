@@ -8,7 +8,7 @@ import CodePart from "../components/card/codepart";
 import { flatten } from "../utils/tree";
 import { getColors, type Theme } from "../utils/theme";
 import type { Language } from "../utils/apiExamples";
-import "./globals.css"
+import "./globals.css";
 type LayoutMode = "Double Column" | "Single Column";
 
 export default function Home() {
@@ -46,7 +46,7 @@ export default function Home() {
     }, 700);
   };
 
-  // Deep-link support: open directly on the endpoint named in the URL hash.
+ 
   useEffect(() => {
     const key = window.location.hash.replace(/^#/, "");
     if (!key) return;
@@ -64,7 +64,6 @@ export default function Home() {
     }, 700);
   }, []);
 
-  // Scroll-spy: highlight the endpoint currently in view within the center column.
   useEffect(() => {
     const root = centerRef.current;
     if (!root) return;
@@ -108,9 +107,20 @@ export default function Home() {
   }, [allKeys]);
 
   const doubleColumn = layout === "Double Column";
+  const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const check = () =>
+      setIsMobile(typeof window !== "undefined" && window.innerWidth <= 900);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
-    <div className="formedia"
+    <div
+      className="formedia"
       style={{
         height: "100vh",
         display: "flex",
@@ -139,9 +149,50 @@ export default function Home() {
       >
         <Sidebar
           activeKey={activeKey}
-          onSelect={handleSelect}
+          onSelect={(k) => {
+            handleSelect(k);
+            if (isMobile) setSidebarOpen(false);
+          }}
           colors={colors}
+          mobile={isMobile}
+          open={isMobile ? sidebarOpen : true}
+          onClose={() => setSidebarOpen(false)}
         />
+
+        {isMobile && (
+          <>
+            {sidebarOpen && (
+              <div
+                onClick={() => setSidebarOpen(false)}
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.35)",
+                  zIndex: 1100,
+                }}
+              />
+            )}
+
+            <button
+              onClick={() => setSidebarOpen((s) => !s)}
+              title="Menu"
+              style={{
+                position: "fixed",
+                top: 12,
+                left: 12,
+                zIndex: 1200,
+                border: "none",
+                background: "grey",
+                color: colors.accentText,
+                padding: "8px 10px",
+                borderRadius: 8,
+                cursor: "pointer",
+              }}
+            >
+              ☰
+            </button>
+          </>
+        )}
 
         <main
           ref={centerRef}
