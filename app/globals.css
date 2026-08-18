@@ -61,6 +61,6 @@
 
 @media screen and (max-width: 900px) {
   .formedia-embed {
-    max-width: 100%;
+    max-width: 440px;
   }
 }

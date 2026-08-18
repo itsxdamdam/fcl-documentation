@@ -1,8 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { flatten, type AnnotatedNode } from "@/utils/tree";
 import { methodColor, type Colors } from "@/utils/theme";
-import { BASE_URL, buildExamples, type FieldRow, type Language } from "@/utils/apiExamples";
+import {
+  BASE_URL,
+  buildExamples,
+  type FieldRow,
+  type Language,
+} from "@/utils/apiExamples";
 import ExampleContent from "../ExampleContent";
 
 function depthOf(key: string): number {
@@ -34,7 +40,9 @@ function FieldTable({ rows, colors }: { rows: FieldRow[]; colors: Colors }) {
         marginTop: "10px",
       }}
     >
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+      <table
+        style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}
+      >
         <thead>
           <tr style={{ backgroundColor: colors.tableHeaderBg }}>
             {["Field", "Type", "Description"].map((head, i) => (
@@ -125,6 +133,15 @@ interface CardProps {
 export default function Card({ colors, layout, language }: CardProps) {
   const nodes = flatten();
   const singleColumn = layout === "Single Column";
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () =>
+      setIsMobile(typeof window !== "undefined" && window.innerWidth <= 900);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <div>
@@ -144,7 +161,14 @@ export default function Card({ colors, layout, language }: CardProps) {
               marginBottom: "18px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "baseline", gap: "10px", flexWrap: "wrap" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: "10px",
+                flexWrap: "wrap",
+              }}
+            >
               {node.method && (
                 <span
                   style={{
@@ -220,7 +244,7 @@ export default function Card({ colors, layout, language }: CardProps) {
               </>
             )}
 
-            {singleColumn && isEndpoint && (
+            {(singleColumn || isMobile) && isEndpoint && (
               <div style={{ marginTop: "26px" }}>
                 <ExampleContent
                   item={node}

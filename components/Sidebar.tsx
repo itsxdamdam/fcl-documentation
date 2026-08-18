@@ -140,9 +140,20 @@ interface SidebarProps {
   activeKey: string | null;
   onSelect: (key: string) => void;
   colors: Colors;
+
+  mobile?: boolean;
+  open?: boolean;
+  onClose?: () => void;
 }
 
-export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
+export default function Sidebar({
+  activeKey,
+  onSelect,
+  colors,
+  mobile = false,
+  open = true,
+  onClose,
+}: SidebarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState<Set<string>>(
     // Digital Services > User Management > V1 open by default.
@@ -157,7 +168,7 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
     });
   };
 
-  // Auto-expand the ancestors of the active node so it is always visible.
+  
   useEffect(() => {
     if (!activeKey) return;
 
@@ -168,7 +179,7 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
     }
   }, [activeKey]);
 
-  // Keep the active row scrolled into view within the sidebar.
+
   useEffect(() => {
     if (!activeKey) return;
 
@@ -176,21 +187,39 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
     el?.scrollIntoView({ block: "nearest" });
   }, [activeKey]);
 
-  return (
-    <nav
-      ref={containerRef}
-      style={{
+  const mobileNavStyle: React.CSSProperties = mobile
+    ? {
+        position: "fixed",
+        left: open ? 0 : -320,
+        top: 0,
+        bottom: 0,
+        width: "280px",
+        height: "100%",
+        overflowY: "auto",
+        backgroundColor: colors.sidebarBg,
+        borderRight: `1px solid ${colors.border}`,
+        paddingBottom: "25px",
+        boxSizing: "border-box",
+        zIndex: 1200,
+        transition: "left 200ms ease",
+        boxShadow: "rgba(2,6,23,0.6) 0px 6px 30px",
+      }
+    : {
         width: "290px",
         flexShrink: 0,
         height: "100%",
         overflowY: "auto",
         backgroundColor: colors.sidebarBg,
         borderRight: `1px solid ${colors.border}`,
-        // paddingLeft: "14px",
-        // paddingRight: "14px",
         paddingBottom: "25px",
         boxSizing: "border-box",
-      }}
+      };
+
+  return (
+    <nav
+      ref={containerRef}
+      style={mobileNavStyle}
+      aria-hidden={!open && mobile}
     >
       <div
         style={{
@@ -198,17 +227,10 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
           marginBottom: "16px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "left",
+          justifyContent: "space-between",
           width: "100%",
         }}
       >
-        {/* <button 
-        onClick={() => {
-          window.location.href = "/";
-        }}
-        >
-          ☰
-        </button> */}
         <Image
           src="/assets/logo.png"
           alt="Fastcredit — Finance Company Limited"
@@ -216,22 +238,37 @@ export default function Sidebar({ activeKey, onSelect, colors }: SidebarProps) {
           height={61}
           style={{ height: "34px", width: "auto" }}
         />
+
+        {mobile && open && (
+          <button
+            onClick={() => onClose && onClose()}
+            aria-label="Close menu"
+            style={{
+              background: "transparent",
+              border: "none",
+              color: colors.sidebarText,
+              fontSize: 22,
+              cursor: "pointer",
+            }}
+          >
+            ×
+          </button>
+        )}
       </div>
-           <div
+      <div
         style={{
           border: `1px solid ${colors.border}`,
           padding: "12px 5px",
           marginBottom: "16px",
-          // backgroundColor: "#da2529",
           display: "flex",
           alignItems: "center",
           justifyContent: "left",
-          paddingLeft:"50px",
+          paddingLeft: "50px",
           width: "100%",
-          fontWeight:"700",
+          fontWeight: "700",
         }}
       >
-     FASTCREDIT APIS
+        FASTCREDIT APIS
       </div>
 
       {annotatedMenu.map((node) => (
